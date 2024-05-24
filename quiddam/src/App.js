@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [text, setText] = useState("");
+  const [tableData, setTableData] = useState([]);
+
+  const handleChange = (event) => {
+    setText(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setTableData([...tableData, text]);
+    setText("");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={text} onChange={handleChange} />
+        <button type="submit">Add to Table</button>
+      </form>
+      <table>
+        <tbody>
+          {tableData.map((item, index) => (
+            <tr key={index}>
+              <td>{item}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
