@@ -8,102 +8,109 @@ function onOpen() {
 function openSidebar() {
   const html = HtmlService.createHtmlOutput(`
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
       .container { 
         text-align: left; 
-        font-family: 'Lexend', sans-serif; 
-        background-color: black; 
-        color: white; 
-        font-size: 18px; 
-        padding: 10px; 
-      }
-      .clickable-label { 
-        color: white; 
-        cursor: pointer; 
-        font-size: 18px; 
-        text-decoration: none;  
-        padding: 10px; 
-        border: 2px solid white; 
-        border-radius: 8px; 
-        background-color: transparent; 
-        transition: background-color 0.3s, transform 0.1s ease-in-out; 
-      }
-      .clickable-label:hover {
+        font-family: 'Montserrat', sans-serif; 
         background-color: white; 
-        color: black; 
-        transform: scale(1.05);
+        color: #757575; 
+        font-size: 24px;
+        font-weight: bold;
+        padding: 10px;
+        margin-top: 20px;
       }
       .highlight { 
-        color: cyan; 
+        color: #2196F3; 
         font-weight: bold; 
-      }
-      .result { 
-        margin-top: 20px; 
-        font-size: 20px; 
-        color: white; 
-        white-space: pre-wrap; 
-        font-family: 'Roboto Mono', monospace; 
-        padding: 10px; 
-      }
-      .hits { 
-        text-align: left; 
-        margin-top: 20px; 
-        font-size: 20px; 
-        color: white; 
-        white-space: pre-wrap; 
-        font-family: 'Lexend', sans-serif; 
-        padding: 10px; 
-      }
-      select { 
-        margin-top: 10px; 
-        padding: 10px; 
-        font-family: 'Lexend', sans-serif; 
-        font-size: 16px; 
-        background-color: black; 
-        color: white; 
-        border: 1px solid white; 
       }
       .slider-container {
         margin-top: 20px;
+        margin-bottom: 20px; 
       }
       .slider {
-        width: 100%;
-        margin: 10px 0;
+        width: 80%;
       }
       .slider-value {
         color: white;
-        font-size: 18px;
+        font-size: 20px;
+        font-family: 'Roboto Mono', monospace; 
       }
+      .clickable-label { 
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: white; 
+        cursor: pointer; 
+        font-size: 20px; 
+        font-family: 'Lexend', sans-serif; 
+        text-decoration: none;  
+        padding: 10px; 
+        border: 1px solid #536DFE;
+        border-radius: 8px; 
+        background-color: #1976D2; 
+        transition: background-color 0.3s, transform 0.1s ease-in-out; 
+      }
+      .clickable-label:hover {
+        background-color: #2196F3; 
+        color: white; 
+        transform: scale(1.30);
+      }
+      .hits { 
+        text-align: left; 
+        margin-top: 20px;
+        font-size: 20px; 
+        color: #212121; 
+        white-space: pre-wrap; 
+        font-family: 'Lexend', sans-serif; 
+        padding: 10px; 
+      }
+      .status { 
+        text-align: left; 
+        font-size: 20px; 
+        color: #BDBDBD; 
+        white-space: pre-wrap; 
+        font-family: 'Lexend', sans-serif; 
+        padding: 10px; 
+      } 
+      .result { 
+        margin-top: 10px;
+        font-size: 20px; 
+        color: #212121; 
+        white-space: pre-wrap; 
+        font-family: 'Roboto Mono', monospace; 
+        padding: 10px; 
+      } 
     </style>
     <div class="container">
-      <label for="quantity">Parada de Dados</label><br>
-      <select id="quantity">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-      </select>
-      <br><br>
-      <span class="clickable-label" onclick="generateRandom()">Rolar!</span>
-      <div class="result" id="result"></div>
+      Rolador de Dados
+      <div class="slider-container">
+        <input type="range" id="quantity" class="slider" min="1" max="10" value="3">
+      </div>
+      <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 3 dados</span>
       <div class="hits" id="hits"></div>
+      <div class="status" id="status"></div>
+      <div class="result" id="result"></div>
       <script>
+        document.getElementById('quantity').addEventListener('input', function() {
+            const quantity = this.value;
+            document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados';
+          });
+        
+        hitsElement.innerText = 'Acertos: 0'; // Show number of hits
+
         function generateRandom() {
           const quantity = parseInt(document.getElementById('quantity').value, 10);
           const resultElement = document.getElementById('result');
           const hitsElement = document.getElementById('hits');
-          resultElement.innerText = 'Rolando os dados...'; // Show a loading message
+          const statusElement = document.getElementById('status');
+          resultElement.innerText = ''; // Show a loading message
           hitsElement.innerText = 'Acertos: 0'; // Show number of hits
+          statusElement.innerText = 'Rolando os dados...'; // Clear message
 
           setTimeout(() => {
             resultElement.innerText = ''; // Clear the loading message
+            statusElement.innerText = 'Rolando os dados...';
             let currentIndex = 0;
             let hits = 0;
             let randomNumbers = '';
@@ -113,16 +120,16 @@ function openSidebar() {
                 const num = Math.floor(Math.random() * 10) + 1;
                 const newResult = document.createElement('div');
                 if (num > 9) {
-                  newResult.innerHTML += '<span class="highlight">' + num + ' 🟦🟦🟦' + '</span>';
+                  newResult.innerHTML += '<span class="highlight">' + num + ' 🔷🔷🔷' + '</span>';
                   hits += 3;
                 } else if (num > 8) {
-                  newResult.innerHTML += '<span class="highlight">' + num + '  🟦🟦⬜' + '</span>';
+                  newResult.innerHTML += '<span class="highlight">' + num + '  🔷🔷 ' + '</span>';
                   hits += 2;
                 } else if (num > 7) {
-                  newResult.innerHTML += '<span class="highlight">' + num + '  🟦⬜⬜' + '</span>';
+                  newResult.innerHTML += '<span class="highlight">' + num + '  🔷  ' + '</span>';
                   hits += 1;
                 } else {
-                  newResult.innerHTML += num + '  ⬜⬜⬜' + '\\n';
+                  newResult.innerHTML += num + '     ' + '\\n';
                 }
 
                 if (hits > 0) {
@@ -132,10 +139,14 @@ function openSidebar() {
                 resultElement.appendChild(newResult);
                 currentIndex++;
                 setTimeout(displayNext, 1500); // delay for the next number
+              } else {
+                statusElement.innerText = ' ';
               }
             }
             displayNext();
           }, 2000); // 2-second delay
+
+          
         }
       </script>
     </div>
