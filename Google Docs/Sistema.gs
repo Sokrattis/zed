@@ -2,11 +2,24 @@ function onOpen() {
   DocumentApp.getUi()
     .createMenu('RPG')
     .addItem('Rolador de Dados', 'openSidebar')
-    .addToUi();
+    .addToUi();  
+}
+
+function writeToDocument(data) {
+  // Get the active document and write the received data
+  const doc = DocumentApp.getActiveDocument();
+  const documentTab = doc.getActiveTab().asDocumentTab();
+  const body = documentTab.getBody();
+  body.appendParagraph(data);
 }
 
 function openSidebar() {
+  const doc = DocumentApp.getActiveDocument();
+
   const html = HtmlService.createHtmlOutput(`
+    <head>
+      <base target="_top">
+    </head>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
@@ -65,14 +78,6 @@ function openSidebar() {
         font-family: 'Lexend', sans-serif; 
         padding: 10px; 
       }
-      .status { 
-        text-align: left; 
-        font-size: 20px; 
-        color: #BDBDBD; 
-        white-space: pre-wrap; 
-        font-family: 'Lexend', sans-serif; 
-        padding: 10px; 
-      } 
       .result { 
         margin-top: 10px;
         font-size: 20px; 
@@ -89,64 +94,52 @@ function openSidebar() {
       </div>
       <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 3 dados</span>
       <div class="hits" id="hits"></div>
-      <div class="status" id="status"></div>
       <div class="result" id="result"></div>
       <script>
         document.getElementById('quantity').addEventListener('input', function() {
             const quantity = this.value;
             document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados';
-          });
-        
-        hitsElement.innerText = 'Acertos: 0'; // Show number of hits
+          });      
 
         function generateRandom() {
           const quantity = parseInt(document.getElementById('quantity').value, 10);
           const resultElement = document.getElementById('result');
           const hitsElement = document.getElementById('hits');
-          const statusElement = document.getElementById('status');
           resultElement.innerText = ''; // Show a loading message
-          hitsElement.innerText = 'Acertos: 0'; // Show number of hits
-          statusElement.innerText = 'Rolando os dados...'; // Clear message
+          hitsElement.innerText = 'Rolando os dados...'; // Clear message
+          let returnValue = '\\nResultado do Teste:\\n';
 
           setTimeout(() => {
             resultElement.innerText = ''; // Clear the loading message
-            statusElement.innerText = 'Rolando os dados...';
             let currentIndex = 0;
             let hits = 0;
-            let randomNumbers = '';
 
             function displayNext() {
               if (currentIndex < quantity) {
                 const num = Math.floor(Math.random() * 10) + 1;
-                const newResult = document.createElement('div');
+                returnValue += currentIndex > 0 ? ', ' : ' ';  // Add comma if not the first number
                 if (num > 9) {
-                  newResult.innerHTML += '<span class="highlight">' + num + ' 🔷🔷🔷' + '</span>';
+                  returnValue += num + ' ✳️✳️✳️';
                   hits += 3;
                 } else if (num > 8) {
-                  newResult.innerHTML += '<span class="highlight">' + num + '  🔷🔷 ' + '</span>';
+                  returnValue +=  num + ' ✳️✳️';
                   hits += 2;
                 } else if (num > 7) {
-                  newResult.innerHTML += '<span class="highlight">' + num + '  🔷  ' + '</span>';
+                  returnValue +=  num + ' ✳️';
                   hits += 1;
                 } else {
-                  newResult.innerHTML += num + '     ' + '\\n';
+                  returnValue +=  num;
                 }
-
-                if (hits > 0) {
-                  hitsElement.innerHTML = 'Acertos: ' + '<span class="highlight">' + hits + '</span>';
-                }
-
-                resultElement.appendChild(newResult);
                 currentIndex++;
-                setTimeout(displayNext, 1500); // delay for the next number
-              } else {
-                statusElement.innerText = ' ';
+                setTimeout(displayNext, 100); // Recursively roll dice
+              } else {              
+                hitsElement.innerHTML = 'Acertos: ' + '<span class="highlight">' + hits + '</span>';
+                returnValue += ' - Acertos: ' + hits;
+                google.script.run.writeToDocument(returnValue); // Send results to Google Docs
               }
             }
             displayNext();
-          }, 2000); // 2-second delay
-
-          
+          }, 2000); // Delay to simulate dice rolling
         }
       </script>
     </div>
