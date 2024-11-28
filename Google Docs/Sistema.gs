@@ -10,7 +10,16 @@ function writeToDocument(data) {
   const doc = DocumentApp.getActiveDocument();
   const documentTab = doc.getActiveTab().asDocumentTab();
   const body = documentTab.getBody();
+
+  const now = new Date();
+  const date = now.toLocaleDateString(); // Format the date as MM/DD/YYYY (default format in most locales)
+  const time = now.toLocaleTimeString(); // Format the time as HH:MM:SS AM/PM
+  const email = Session.getActiveUser().getEmail();
+  body.appendParagraph(`\n${email}`);
+  timestamp = `Data e Hora: ${date} ${time}`;
+  body.appendParagraph(timestamp);
   body.appendParagraph(data);
+  
 }
 
 function openSidebar() {
@@ -71,9 +80,9 @@ function openSidebar() {
       }
       .hits { 
         text-align: left; 
-        margin-top: 20px;
-        font-size: 20px; 
-        color: #212121; 
+        margin-top: 10px;
+        font-size: 14px; 
+        color: #1976D2; 
         white-space: pre-wrap; 
         font-family: 'Lexend', sans-serif; 
         padding: 10px; 
@@ -107,7 +116,7 @@ function openSidebar() {
           const hitsElement = document.getElementById('hits');
           resultElement.innerText = ''; // Show a loading message
           hitsElement.innerText = 'Rolando os dados...'; // Clear message
-          let returnValue = '\\nResultado do Teste:\\n';
+          let returnValue = 'Resultado do Teste:';
 
           setTimeout(() => {
             resultElement.innerText = ''; // Clear the loading message
@@ -133,13 +142,13 @@ function openSidebar() {
                 currentIndex++;
                 setTimeout(displayNext, 100); // Recursively roll dice
               } else {              
-                hitsElement.innerHTML = 'Acertos: ' + '<span class="highlight">' + hits + '</span>';
-                returnValue += ' - Acertos: ' + hits;
+                hitsElement.innerHTML = 'Resultado enviado para o fim da guia ativa.';
+                returnValue += ' (Acertos = ' + hits + ')';
                 google.script.run.writeToDocument(returnValue); // Send results to Google Docs
               }
             }
             displayNext();
-          }, 2000); // Delay to simulate dice rolling
+          }, 1000); // Delay to simulate dice rolling
         }
       </script>
     </div>
