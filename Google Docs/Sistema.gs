@@ -145,7 +145,7 @@ function openSidebar() {
                 } else if (num > 8) {
                   returnValue +=  num + ' ✳️✳️';
                   hits += 2;
-                } else if (num > 6) {
+                } else if (num > 5) {
                   returnValue +=  num + ' ✳️';
                   hits += 1;
                 } else {
