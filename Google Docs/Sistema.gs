@@ -37,7 +37,7 @@ function openSidebar() {
         font-family: 'Montserrat', sans-serif; 
         background-color: white; 
         color: #757575; 
-        font-size: 20px;
+        font-size: 14px;
         font-weight: bold;
         padding: 10px;
         margin-top: 20px;
@@ -55,7 +55,7 @@ function openSidebar() {
       }
       .slider-value {
         color: white;
-        font-size: 20px;
+        font-size: 14px;
         font-family: 'Roboto Mono', monospace; 
       }
       .clickable-label { 
