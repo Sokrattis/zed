@@ -114,7 +114,6 @@ function openSidebar() {
       <script>
         let quantity = 3;
         let modifier = 0;
-        let dificuldade = 1;
 
         document.getElementById('quantity').addEventListener('input', function() {
             quantity = this.value;
@@ -156,8 +155,8 @@ function openSidebar() {
                 } else if (num > 8) {
                   returnValue +=  num + ' 🔆🔆';
                   hits += 2;
-                } else if (num > 7) {
-                  returnValue +=  num + ' 🔆';
+                } else if (num > 5) {
+                  returnValue +=  num + ' ✳️';
                   hits += 1;
                 } else {
                   returnValue +=  num;
@@ -166,27 +165,7 @@ function openSidebar() {
                 setTimeout(displayNext, 100); // Recursively roll dice
               } else {              
                 hitsElement.innerHTML = 'Resultado enviado para o fim da guia ativa.';
-                
-                if(hits <= 0) {
-                  returnValue += '\\nAcertos: ' + hits + ' (modificador desconsiderado pois não houve acerto nos dados) ';
-                  returnValue += '\\nResultado (CD ' + dificuldade + '): Fracasso';
-                } else if((hits+modifier) >= dificuldade) {
-                  returnValue += '\\nAcertos: ' + hits + ' + ' + modifier + ' = ' + (hits+modifier);
-                  if((hits+modifier-dificuldade+1) == 0) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito';
-                  } else if((hits+modifier-dificuldade+1) == 1) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito com ' + (hits+modifier-dificuldade+1) + ' sucesso ';
-                  } else {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito com ' + (hits+modifier-dificuldade+1) + ' sucessos ';
-                  }
-                } else {
-                  returnValue += '\\nAcertos: ' + hits + ' + ' + modifier + ' = ' + (hits+modifier);
-                  if((hits+modifier) == 1) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito parcial com ' + (hits+modifier) + ' acerto';
-                  } else {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito parcial com ' + (hits+modifier) + ' acertos';
-                  }
-                }
+                returnValue += '\\nAcertos: ' + hits + ' + ' + modifier + ' = ' + (hits+modifier);
                 google.script.run.writeToDocument(returnValue); // Send results to Google Docs
               }
             }
