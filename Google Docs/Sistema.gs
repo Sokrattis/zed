@@ -2,7 +2,14 @@ function onOpen() {
   DocumentApp.getUi()
     .createMenu('RPG')
     .addItem('Rolador de Dados', 'openSidebar')
+    .addItem('Lançamento de Feitiços', 'showTesteDeIntegracao')
     .addToUi();  
+}
+
+function showTesteDeIntegracao() {
+  const html = HtmlService.createHtmlOutputFromFile("TesteDeIntegracao")
+    .setTitle("Lançamento de Feitiços");
+  DocumentApp.getUi().showSidebar(html);
 }
 
 function writeToDocument(data) {
@@ -14,10 +21,8 @@ function writeToDocument(data) {
   const now = new Date();
   const date = now.toLocaleDateString(); // Format the date as MM/DD/YYYY (default format in most locales)
   const time = now.toLocaleTimeString(); // Format the time as HH:MM:SS AM/PM
-  const email = Session.getActiveUser().getEmail();
-  body.appendParagraph(`\nJogador: ${email}`);
-  timestamp = `Data e Hora: ${date} ${time}`;
-  body.appendParagraph(timestamp);
+  const email = Session.getActiveUser().getEmail().replace('@gmail.com', '');
+  body.appendParagraph(`\n${time} - ${email}`);
   body.appendParagraph(data);
 }
 
@@ -100,15 +105,7 @@ function openSidebar() {
       <div class="slider-container">
         <input type="range" id="quantity" class="slider" min="1" max="12" value="3">
       </div>
-      Modificador
-      <div class="slider-container">
-        <input type="range" id="modifier" class="slider" min="-6" max="6" value="0">
-      </div>
-      Classe de Dificuldade
-      <div class="slider-container">
-        <input type="range" id="dificuldade" class="slider" min="1" max="21" value="1">
-      </div>
-      <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 3 dados (+0) com CD 1</span>
+      <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 3 dados</span>
       <div class="hits" id="hits"></div>
       <div class="result" id="result"></div>
       <script>
@@ -118,28 +115,16 @@ function openSidebar() {
 
         document.getElementById('quantity').addEventListener('input', function() {
             quantity = this.value;
-            document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados (' + (modifier >= 0 ? '+' : '') + modifier + ') com CD ' + dificuldade;
-          });
-
-        document.getElementById('modifier').addEventListener('input', function() {
-            modifier = this.value;
-            document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados (' + (modifier >= 0 ? '+' : '') + modifier + ') com CD ' + dificuldade;
-          });
-
-        document.getElementById('dificuldade').addEventListener('input', function() {
-            dificuldade = this.value;
-            document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados (' + (modifier >= 0 ? '+' : '') + modifier + ') com CD ' + dificuldade;
+            document.getElementById('generate-btn').innerText = 'Jogar ' + quantity + ' dados';
           });
 
         function generateRandom() {
           const quantity = parseInt(document.getElementById('quantity').value, 10);
-          const modifier = parseInt(document.getElementById('modifier').value, 10);
-          const dificuldade = parseInt(document.getElementById('dificuldade').value, 10);
           const resultElement = document.getElementById('result');
           const hitsElement = document.getElementById('hits');
           resultElement.innerText = ''; // Show a loading message
           hitsElement.innerText = 'Rolando os dados...'; // Clear message
-          let returnValue = 'Teste de ' + quantity + ' dados (' + (modifier >= 0 ? '+' : '') + modifier + '): ';
+          let returnValue = '➝ Resultado de ' + quantity + ' dados: ';
 
           setTimeout(() => {
             resultElement.innerText = ''; // Clear the loading message
@@ -166,27 +151,6 @@ function openSidebar() {
                 setTimeout(displayNext, 100); // Recursively roll dice
               } else {              
                 hitsElement.innerHTML = 'Resultado enviado para o fim da guia ativa.';
-                
-                if(hits <= 0) {
-                  returnValue += '\\nAcertos: ' + hits + ' (modificador desconsiderado pois não houve acerto nos dados) ';
-                  returnValue += '\\nResultado (CD ' + dificuldade + '): Fracasso';
-                } else if((hits+modifier) >= dificuldade) {
-                  returnValue += '\\nAcertos: ' + hits + ' + ' + modifier + ' = ' + (hits+modifier);
-                  if((hits+modifier-dificuldade+1) == 0) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito';
-                  } else if((hits+modifier-dificuldade+1) == 1) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito com ' + (hits+modifier-dificuldade+1) + ' sucesso ';
-                  } else {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito com ' + (hits+modifier-dificuldade+1) + ' sucessos ';
-                  }
-                } else {
-                  returnValue += '\\nAcertos: ' + hits + ' + ' + modifier + ' = ' + (hits+modifier);
-                  if((hits+modifier) == 1) {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito parcial com ' + (hits+modifier) + ' acerto';
-                  } else {
-                    returnValue += '\\nResultado (CD ' + dificuldade + '): Êxito parcial com ' + (hits+modifier) + ' acertos';
-                  }
-                }
                 google.script.run.writeToDocument(returnValue); // Send results to Google Docs
               }
             }

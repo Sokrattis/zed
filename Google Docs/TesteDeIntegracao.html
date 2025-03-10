@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+      .container { 
+        text-align: left; 
+        font-family: 'Montserrat', sans-serif; 
+        background-color: white; 
+        color: #121212; 
+        font-size: 14px;
+        font-weight: normal;
+        padding: 10px;
+        margin-top: 20px;
+      }
+      .clickable-label { 
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: white; 
+        cursor: pointer; 
+        font-size: 14px; 
+        font-family: 'Lexend', sans-serif; 
+        text-decoration: none;  
+        padding: 12px; 
+        border: 1px solid #536DFE;
+        border-radius: 12px; 
+        background-color: #1976D2; 
+        transition: background-color 0.3s, transform 0.1s ease-in-out; 
+      }
+      .clickable-label:hover {
+        background-color: #2196F3; 
+        color: white; 
+        transform: scale(1.30);
+      }
+      #checkbox-container div {
+        margin-bottom: 2px; /* Adds space between checklist items */
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Adds space between checkbox and label */
+      }
+    </style>
+  </head>
+  <div class="container">
+    <h4>Princípios Místicos</h4>
+    <div id="checkbox-container"></div>
+    <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Lançar Feitiço</span>
+    <br><br><br>
+    <div class="result" id="result"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById("checkbox-container");
+        const items = [
+          { label: "Mística", tooltip: "Lançando um Feitiço Emblemático ou uma de suas variações" },
+          { label: "Ancoragem", tooltip: "O Feitiço é canalizado por um objeto físico que o simboliza" },
+          { label: "Discrição", tooltip: "A forma de lançamento é compatível com todas as crenças locais" },
+          { label: "Expressão", tooltip: "A forma de lançamento representa o efeito almejado" },
+          { label: "Conservação", tooltip: "Não há nenhum outro Feitiço ativo no ambiente" },
+          { label: "Alcance", tooltip: "Os alvos do Feitiço estão em contato direto com a Aura de quem o lançou" },
+          { label: "Fronteira", tooltip: "O Feitiço está contido dentro de uma demarcação física dedicada para ele" },
+          { label: "Cessação", tooltip: "O Feitiço possui uma condição clara para o seu término ou suspensão" },
+          { label: "Potencialização", tooltip: "O Feitiço possui uma grandeza definida para sua potencialização" }
+        ];
+        
+        items.forEach((item, index) => {
+          const div = document.createElement("div");
+          div.style.marginBottom = "15px"; // Adds space between checklist items
+          div.style.display = "flex";
+          div.style.flexDirection = "column"; // Ensures label and small text are stacked
+          div.style.alignItems = "flex-start"; // Aligns everything to the left
+          div.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" id="chk${index}">
+              <label for="chk${index}" style="font-weight: bold;">${item.label}</label>
+            </div>
+            <small style="color: gray; font-weight: normal; margin-left: 24px; display: block;">${item.tooltip}</small>
+          `;
+          container.appendChild(div);
+          container.appendChild(document.createElement("br"));
+        });
+      });
+
+      function generateRandom() {
+          const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+          const quantity = checkboxes.length;
+          const resultElement = document.getElementById('result');
+
+          resultElement.innerText = '➝ Resultado de ' + quantity + ' dados...'; // Show a loading message
+          let returnValue = '➝ Resultado de ' + quantity + ' dados: ';
+
+          setTimeout(() => {
+            resultElement.innerText = ''; // Clear the loading message
+            let currentIndex = 0;
+            let hits = 0;
+
+            function displayNext() {
+              if (currentIndex < quantity) {
+                const num = Math.floor(Math.random() * 10) + 1;
+                returnValue += currentIndex > 0 ? ', ' : ' ';  // Add comma if not the first number
+                if (num > 9) {
+                  returnValue += num + ' 🔆🔆🔆';
+                  hits += 3;
+                } else if (num > 8) {
+                  returnValue +=  num + ' 🔆🔆';
+                  hits += 2;
+                } else if (num > 7) {
+                  returnValue +=  num + ' 🔆';
+                  hits += 1;
+                } else {
+                  returnValue +=  num;
+                }
+                currentIndex++;
+                setTimeout(displayNext, 100); // Recursively roll dice
+              } else {              
+                resultElement.innerHTML = 'Resultado enviado para o fim da guia ativa.';
+                google.script.run.writeToDocument(returnValue); // Send results to Google Docs
+              }
+            }
+            displayNext();
+          }, 1000); // Delay to simulate dice rolling
+        }
+    </script>
+  </div>
+</html>
