@@ -103,13 +103,13 @@ function openSidebar() {
     <div class="container">
       Dados
       <div class="slider-container">
-        <input type="range" id="quantity" class="slider" min="1" max="12" value="3">
+        <input type="range" id="quantity" class="slider" min="1" max="10" value="1">
       </div>
-      <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 3 dados</span>
+      <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar 1 dado</span>
       <div class="hits" id="hits"></div>
       <div class="result" id="result"></div>
       <script>
-        let quantity = 3;
+        let quantity = 1;
         let modifier = 0;
         let dificuldade = 1;
 

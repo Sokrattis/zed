@@ -14,17 +14,16 @@
         font-size: 14px;
         font-weight: normal;
         padding: 10px;
-        margin-top: 20px;
       }
       .clickable-label { 
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 50px;
+        margin-bottom: 50px;
         color: white; 
         cursor: pointer; 
         font-size: 14px; 
         font-family: 'Lexend', sans-serif; 
         text-decoration: none;  
-        padding: 12px; 
+        padding: 15px; 
         border: 1px solid #536DFE;
         border-radius: 12px; 
         background-color: #1976D2; 
@@ -46,6 +45,7 @@
   <div class="container">
     <h4>Princípios Místicos</h4>
     <div id="checkbox-container"></div>
+    <br>
     <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Lançar Feitiço</span>
     <br><br><br>
     <div class="result" id="result"></div>
@@ -67,12 +67,12 @@
         
         items.forEach((item, index) => {
           const div = document.createElement("div");
-          div.style.marginBottom = "15px"; // Adds space between checklist items
+          div.style.marginBottom = "5px"; // Adds space between checklist items
           div.style.display = "flex";
           div.style.flexDirection = "column"; // Ensures label and small text are stacked
           div.style.alignItems = "flex-start"; // Aligns everything to the left
           div.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
               <input type="checkbox" id="chk${index}">
               <label for="chk${index}" style="font-weight: bold;">${item.label}</label>
             </div>
@@ -85,10 +85,10 @@
 
       function generateRandom() {
           const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
-          const quantity = checkboxes.length;
+          const quantity = 1 + checkboxes.length;
           const resultElement = document.getElementById('result');
 
-          resultElement.innerText = '➝ Resultado de ' + quantity + ' dados...'; // Show a loading message
+          resultElement.innerText = 'Jogando os dados...'; // Show a loading message
           let returnValue = '➝ Resultado de ' + quantity + ' dados: ';
 
           setTimeout(() => {
@@ -115,7 +115,7 @@
                 currentIndex++;
                 setTimeout(displayNext, 100); // Recursively roll dice
               } else {              
-                resultElement.innerHTML = 'Resultado enviado para o fim da guia ativa.';
+                resultElement.innerHTML = 'Enviado para o fim da guia ativa';
                 google.script.run.writeToDocument(returnValue); // Send results to Google Docs
               }
             }
