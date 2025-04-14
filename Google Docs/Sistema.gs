@@ -3,12 +3,19 @@ function onOpen() {
     .createMenu('RPG')
     .addItem('Rolador de Dados', 'openSidebar')
     .addItem('Lançamento de Feitiços', 'showTesteDeIntegracao')
+    .addItem('Dano de Combate', 'showTesteDeDano')
     .addToUi();  
 }
 
 function showTesteDeIntegracao() {
   const html = HtmlService.createHtmlOutputFromFile("TesteDeIntegracao")
     .setTitle("Lançamento de Feitiços");
+  DocumentApp.getUi().showSidebar(html);
+}
+
+function showTesteDeDano() {
+  const html = HtmlService.createHtmlOutputFromFile("TesteDeDano")
+    .setTitle("Dano de Combate");
   DocumentApp.getUi().showSidebar(html);
 }
 

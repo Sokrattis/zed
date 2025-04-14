@@ -43,10 +43,10 @@
     </style>
   </head>
   <div class="container">
-    <h4>Princípios do Lançamento</h4>
+    <h4>Trunfos de Combate</h4>
     <div id="checkbox-container"></div>
     <br>
-    <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Lançar Feitiço</span>
+    <span class="clickable-label" id="generate-btn" onclick="generateRandom()">Jogar Dados</span>
     <br><br><br>
     <div class="result" id="result"></div>
 
@@ -54,50 +54,32 @@
       document.addEventListener("DOMContentLoaded", function() {
         const container = document.getElementById("checkbox-container");
         const items = [
-          { label: "Ancoragem Correta", tooltip: "O Feitiço é canalizado por um objeto físico que o simboliza" },
-          { label: "Discrição Correta", tooltip: "O Feitiço não atrai atenção de pessoas não-liberadas" },
-          { label: "Expressão Correta", tooltip: "O simbolismo do Feitiço é reforçado por gestos, palavras ou figuras" },
-          { label: "Virtude Correta", tooltip: "O Feitiço não prejudica outros seres e não lhes causa nenhum dano direto" },
-          { label: "Alcance Correto", tooltip: "Seus alvos estão em contato direto com sua Aura durante o lançamento" },
-          { label: "Fronteira Correta", tooltip: "O Feitiço é limitado por uma fronteira menor que a Aura do lançador" },
-          { label: "Cessação Correta", tooltip: "O Feitiço possui uma condição breve para o seu término ou suspensão" },
-          { label: "Potência Correta", tooltip: "Todas as propriedades do Feitiço estão restritas a níveis mínimos de grandeza" }
+          { label: "Habilidade", tooltip: "Você possui uma Classe de Combate com nível maior que o alvo" },
+          { label: "Brutalidade", tooltip: "Usando armas de duas mãos ou possuindo Força maior que o alvo" },
+          { label: "Fineza", tooltip: "Usando armas leves ou de longo alcance, ou possuindo Destreza maior que o alvo" },
+          { label: "Defesa", tooltip: "Usando armadura, cobertura ou proteção superior ao do alvo" },
+          { label: "Desimpedimento", tooltip: "Não há nenhuma condição ou dano dificultando os seus movimentos ou reações" },
+          { label: "Sobrevivência", tooltip: "Lutando para não morrer ou para salvar a vida de alguém" },
+          { label: "Astúcia", tooltip: "Explorando fraquezas e impedimentos ou aproveitando vantagens e condições" },
+          { label: "Letalidade", tooltip: "Usando alta energia ou velocidade (armas de fogo, explosivos etc.)" }
         ];
         
-        const renderCheckbox = (item, index, checked = false) => {
+        items.forEach((item, index) => {
           const div = document.createElement("div");
-          div.style.marginBottom = "5px";
+          div.style.marginBottom = "5px"; // Adds space between checklist items
           div.style.display = "flex";
-          div.style.flexDirection = "column";
-          div.style.alignItems = "flex-start";
+          div.style.flexDirection = "column"; // Ensures label and small text are stacked
+          div.style.alignItems = "flex-start"; // Aligns everything to the left
           div.innerHTML = `
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="checkbox" id="chk${index}" ${checked ? "checked" : ""}>
+              <input type="checkbox" id="chk${index}">
               <label for="chk${index}" style="font-weight: bold;">${item.label}</label>
             </div>
             <small style="color: gray; font-weight: normal; margin-left: 24px; display: block;">${item.tooltip}</small>
           `;
           container.appendChild(div);
           container.appendChild(document.createElement("br"));
-        };
-
-        // Grupo 1 (sem check automático)
-        for (let i = 0; i < 4; i++) {
-          renderCheckbox(items[i], i, false);
-        }
-
-        // Label separador
-        const separator = document.createElement("div");
-        separator.textContent = "Princípios do Efeito";
-        separator.style.margin = "10px 0 5px 0";
-        separator.style.fontWeight = "bold";
-        container.appendChild(separator);
-        container.appendChild(document.createElement("br"));
-
-        // Grupo 2 (com check automático)
-        for (let i = 4; i < 8; i++) {
-          renderCheckbox(items[i], i, true);
-        }
+        });
       });
 
       function generateRandom() {
