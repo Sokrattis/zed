@@ -22,7 +22,7 @@ async def teste(ctx, n: int = 1):
     timestamp = ctx.message.created_at.strftime("%H:%M:%S")
     user = ctx.author.name
     # envia no formato desejado
-    await ctx.send(f"\n➝ Resultado de {n} dados:  {joined}")
+    await ctx.send(f"\n{joined}")
 
 token = os.getenv("DISCORD_TOKEN")
 bot.run(token)
