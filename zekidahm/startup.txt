@@ -1,0 +1,2 @@
+cd zekidahm/authades
+python authades.py
